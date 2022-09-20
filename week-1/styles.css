@@ -1,0 +1,141 @@
+.frame{
+    display: flex; /* 讓下一層次的項目水平排列 */
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+}
+.logo-text{
+    flex: none; /*固定配置*/
+    width: 200px;
+    font-size: 20px;
+    padding-left: 10px;
+    font-weight: bold;
+
+}
+.desktop-menu{
+    display: flex;
+    justify-content: flex-end; /*水平靠右*/
+    flex: auto;
+
+}
+.mobile-menu{
+    display: none;
+
+}
+.item{
+    flex: none; /*固定配置*/
+    width: 100px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: lighter;
+    margin-left: 10px;
+    
+}
+.banner{
+    display: flex;
+    justify-content: center;
+    align-items: center; /*垂直對齊*/
+    height: 300px;
+    background: url(images/banner-bg.jpg) no-repeat;
+    background-position:top center;
+    margin-bottom: 10px;
+}
+.banner-text{
+    width: 400px;
+    height: 40px;
+    font-size: 40px;
+    font-weight: lighter;
+    color: #606060;
+    text-align: center;
+
+}
+.list{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+.title{
+    display: flex;
+    flex: none;
+    width: 580px;
+    margin: 10px;
+    border: 1px #8e8e8e solid;
+
+}
+
+.title-text{
+    flex: none;
+    padding-top: 16px;
+    font-size: 20px;
+
+}
+.content{
+    flex: none;
+    width: 280px;
+    margin: 10px;
+
+}
+.content-text{
+    flex: none;
+    font-size: 16px;
+    border: 1px #8e8e8e solid;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+.footer{
+    text-align: center;
+    color: #606060;
+    font-weight: lighter;
+    margin: 10px;
+}
+@media(max-width:1920px){
+    .list{
+        flex-wrap: wrap;
+    }
+    .product{
+        width: 280px;
+    
+    }
+    .title{
+        width: 580px;
+    
+    }
+}
+@media(max-width:1220px){
+    .list{
+        flex-wrap: wrap;
+    }
+    .content{
+        width: 45%;
+    
+    }
+    .title{
+        width: 45%;
+    
+    }
+}
+@media(max-width:600px){
+    .logo-text{
+        flex: none; /*固定配置*/
+        width: 91%;
+        font-size: 30px;
+    }
+    .desktop-menu{
+        text-align: center;
+        display: none;
+    }
+    .mobile-menu{
+        display: block;
+        padding-top: 3px;
+
+    }
+    .content{
+        width: 90%;
+    }
+    .title{
+        width: 90%;
+
+    }
+
+
+}
