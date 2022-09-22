@@ -1,5 +1,4 @@
 body{ margin: 0; padding: 0; }
-
 .frame{
     display: flex; /* 讓下一層次的項目水平排列 */
     margin-top: 10px;
@@ -49,7 +48,6 @@ body{ margin: 0; padding: 0; }
     font-weight: lighter;
     color: #606060;
     text-align: center;
-
 }
 .list{
     display: flex;
@@ -63,7 +61,6 @@ body{ margin: 0; padding: 0; }
     margin: 10px;
     border: 1px #8e8e8e solid;
     justify-content: start;
-
 }
 
 .title-text{
@@ -77,6 +74,10 @@ body{ margin: 0; padding: 0; }
     width: 280px;
     margin: 10px;
     position:relative;
+
+}
+.content img{
+    display:block;
 
 }
 .content img{
