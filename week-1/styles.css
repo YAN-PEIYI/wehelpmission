@@ -3,6 +3,7 @@ body{ margin: 0; padding: 0; }
     display: flex; /* 讓下一層次的項目水平排列 */
     margin-top: 10px;
     margin-bottom: 10px;
+    margin-right: 5px;
 
 }
 .logo-text{
@@ -19,10 +20,62 @@ body{ margin: 0; padding: 0; }
     flex: auto;
 
 }
-.mobile-menu{
+.mobile-menu-icon{
     display: none;
 
 }
+
+ul {
+    display: block;
+    list-style: none;
+    margin-top: 100px;
+
+}
+ul li {
+    display: block;
+    list-style: none;
+
+}
+.right-menu {
+    position: fixed;
+    z-index: 9;
+    top: 0px;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    /*重要*/
+    width: 200px;
+    background-color: rgb(96, 96, 96, 0.8);
+    -webkit-transform: translate3d(280px, 0, 0);
+    -moz-transform: translate3d(200px, 0, 0);
+    -o-transform: translate3d(200px, 0, 0);
+    transform: translate3d(200px, 0, 0);
+    -webkit-transition: all 500ms ease-in-out;
+    -moz-transition: all 500ms ease-in-out;
+    -o-transition: all 500ms ease-in-out;
+    transition: all 500ms ease-in-out;
+}
+.right-menu ul li {
+    text-align: center;
+    color: white;
+    font-size: 20px;
+    line-height: 40px;
+    border-bottom: 1px solid #dbdbdb;
+    margin: 20px 20px 0 0;
+}
+  
+.right-menu.active {
+    right: 0;
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0);
+    -o-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    -webkit-transition: all 500ms ease-in-out;
+    -moz-transition: all 500ms ease-in-out;
+    -o-transition: all 500ms ease-in-out;
+    transition: all 500ms ease-in-out;
+} 
 .item{
     flex: none; /*固定配置*/
     width: 100px;
@@ -62,7 +115,6 @@ body{ margin: 0; padding: 0; }
     border: 1px #8e8e8e solid;
     justify-content: start;
 }
-
 .title-text{
     display: flex;
     align-items: center;
@@ -82,15 +134,13 @@ body{ margin: 0; padding: 0; }
 }
 .content img{
     display:block;
-    
-    
+      
 }
 .content-text{
     flex: none;
     font-size: 16px;
     padding-top: 3px;
     padding-bottom: 3px;
-    /*background-color: rgba(,255,204,0.2);*/
     background-color: rgb(96, 96, 96, 0.5);
     color: rgb(255, 255, 255);
     position:absolute;
@@ -128,7 +178,6 @@ body{ margin: 0; padding: 0; }
         width: 580px;
     
     }
-
 }
 @media(max-width:1220px){
     .list{
@@ -153,7 +202,7 @@ body{ margin: 0; padding: 0; }
         text-align: center;
         display: none;
     }
-    .mobile-menu{
+    .mobile-menu-icon{
         display: block;
         padding-top: 3px;
 
