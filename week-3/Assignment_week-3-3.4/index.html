@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <title>City. Travel</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js'></script>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo-text">City. Travel</div>
+        <div class="desktop-menu">
+            <div class="item">Home</div>
+            <div class="item">About</div>
+            <div class="item">Attractions</div>
+            <div class="item">Contact</div>
+        </div>
+        <div class="mobile-menu-icon openR">
+            <img src="images/menu-burger.svg" width="30px" height="30px">
+        </div>
+        <aside class="right-menu">
+            <ul>
+                <li>Home</li>
+                <li>About</li>
+                <li>Attractions</li>
+                <li>Contact</li>
+            </ul>
+        </aside>
+    </div>
+    <div class="layer">
+        <div class="banner">
+            <div class="banner-text">Welcome to Taipei</div>
+        </div>
+        <div class="list" id="titleResult"></div>
+        <div class="list" id="contentResult"></div>
+        <div id="moreSection" class="list"> </div>
+        <button id="loadMore" class="loadMore" onclick="loadMoreBtn()">Load More</button>
+    </div>
+    <br>
+    <hr/>
+    <footer>
+        <div class="footer">YANPEIYI</div>
+    </footer>
+    <script>
+
+        let attractions;
+        let currentPage = 10;
+        const step = 8;
+
+        fetch("https://padax.github.io/taipei-day-trip-resources/taipei-attractions-assignment.json").then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            let titleResult = document.getElementById("titleResult");
+            let contentResult = document.getElementById("contentResult");
+            let moreSection = document.getElementById("moreSection");
+            attractions = data["result"]["results"];
+
+            //console.log('all attractions: ', attractions)   
+
+            for (let i = 0; i < 10; i++) {
+                let index = attractions[i]["file"].toLowerCase().indexOf(".jpg");
+                let firstImage = attractions[i]["file"].slice(0, index + 4);
+                let titleName = attractions[i]["stitle"];
+
+                if (i < 2) {
+                    let titleImage = document.createElement('img');
+                    titleImage.src = firstImage;
+                    titleImage.style.width = "80px";
+                    titleImage.style.height = "50px";
+
+                    let titleText = document.createElement('div');
+                    titleText.className = "title-text";
+                    titleText.innerText = titleName;
+
+                    let titleTag = document.createElement("div");
+                    titleTag.className = "title";
+
+                    titleTag.appendChild(titleImage);
+                    titleTag.appendChild(titleText);
+                    titleResult.appendChild(titleTag);
+                }
+                else {
+                    let contentImage = document.createElement("img");
+                    contentImage.src = firstImage;
+                    contentImage.style.width = "100%";
+
+                    let contentText = document.createElement("div");
+                    contentText.className = 'content-text';
+                    contentText.innerText = titleName;
+
+                    let contentTag = document.createElement("div");
+                    contentTag.className = "content";
+
+                    contentTag.appendChild(contentImage);
+                    contentTag.appendChild(contentText);
+                    contentResult.appendChild(contentTag);
+                }
+            }
+        })
+
+        function loadMoreBtn() {
+            //console.log('currentPage: ', currentPage)
+            for (let i = currentPage; i < currentPage + step; i++) {
+                if (currentPage + step <= attractions.length) {
+                    //console.log('clicked ' + attractions[i]['stitle'])
+
+                    let attraction = attractions[i];
+                    let index = attractions[i]["file"].toLowerCase().indexOf(".jpg");
+                    let firstImage = attractions[i]["file"].slice(0, index + 4);
+                    let titleName = attractions[i]["stitle"];
+
+                    let moreImage = document.createElement("img");
+                    moreImage.src = firstImage;
+                    moreImage.style.width = "100%";
+
+                    let moreText = document.createElement("div");
+                    moreText.className = 'content-text';
+                    moreText.innerText = titleName;
+
+                    let moreTag = document.createElement("div");
+                    moreTag.className = "content";
+
+                    moreTag.appendChild(moreImage);
+                    moreTag.appendChild(moreText);
+                    moreSection.appendChild(moreTag);
+                    document.getElementById("loadMore").scrollIntoView();
+                }
+                else {
+                    document.getElementById("loadMore").innerText = "No More";
+                    document.getElementById("loadMore").classList.add("noMore");
+                    document.getElementById("loadMore").classList.remove("loadMore");
+                     
+                }
+            }
+            //console.log('currentPage: ', currentPage)            
+            currentPage = currentPage + step;
+        }
+
+        (function () {
+            $('.openR').click(function () {
+                $('.right-menu').toggleClass('active');
+            });
+            $(".layer").click(function (e) {
+                if ($('.right-menu').hasClass("active")) {
+                    $('.right-menu').removeClass("active");
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
