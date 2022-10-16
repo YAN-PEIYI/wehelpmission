@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,24 +10,35 @@
     <title>會員登入系統</title>
     <link rel="icon" type="image/x-icon" href="static/favicon.ico" />
 </head>
+
 <body>
     <div class="system_name">
         <h2>會員登入系統</h2>
     </div>
-        <div class="container">
+    <div class="container">
         <h3>登入 Login</h3>
-            <form action="/signin" method="post">
-                    <input type="text" class="input-item" name="account" placeholder="帳號">
-                    <input type="password" class="input-item" name="password" placeholder="密碼">
-                    <input type="submit" value="登入" class="submit">
-            </form>   
-            <hr>
-            <h3>計算正整數的平方</h3>    
-            <form action="/square">
-                <input type="number" class="input-item" name="number" placeholder="請輸入正整數">
-                <input type="submit" value="計算" class="submit">
-            </form>
-        </div>
+        <form action="/signin" method="post">
+            <input type="text" class="input-item" name="account" placeholder="帳號">
+            <input type="password" class="input-item" name="password" placeholder="密碼">
+            <input type="submit" value="登入" class="submit">
+        </form>
+        <hr>
+        <h3>計算正整數的平方</h3>
+        <input type="number" class="input-item" id="number" placeholder="請輸入正整數">
+        <button class="submit" onclick="square()">計算</button>
+    </div>
+
+    <script>
+        function square(){
+            const url = "http://127.0.0.1:3000/square";
+            const number = document.getElementById("number").value;
+            if(number === ""){ 
+                location.href = url;
+            }else{ 
+                location.href = url + "/" + number;                
+            }
+        }
+    </script>
 </body>
 
 </html>

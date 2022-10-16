@@ -17,7 +17,7 @@ def signin():
     password = request.form["password"]
 
     if len(account) == 0 or len(password) == 0:
-        return redirect("/error?message=請輸入帳號、密碼")
+        return redirect("/error?message=請輸入帳號、密碼&status=成功")
     else:
         if account == "test" and password == "test":
             session["status"] = "sign in"
@@ -28,7 +28,7 @@ def signin():
 @app.route("/member")
 def member(): 
     if "status" not in session or session["status"] == "sign out":
-        return redirect("/")
+        return redirect("/") 
     return render_template("member.html")
 
 @app.route("/error")
@@ -46,11 +46,7 @@ def signout():
 def square(number):
     result = None
     if number is None:
-        input_number=request.args.get("number")
-        if len(input_number) == 0:
-            result = "請輸入數字"
-        else:
-            result = pow(int(input_number), 2)        
+        result = "請輸入數字"      
     else:
         result = pow(number, 2)
     return render_template("square.html", data=result)
