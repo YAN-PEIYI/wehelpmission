@@ -5,12 +5,11 @@ from flask import session
 from flask import redirect
 import mysql.connector
 
-
 mydb = mysql.connector.connect(
   host="localhost", 
-  user="root",
+  user="root", 
   passwd="meilumei520peiyi",
-  database="website"
+  database="website",
 )
 
 app=Flask(__name__) 
@@ -25,24 +24,23 @@ def signup():
     name = request.form["name"]
     account = request.form["account"]
     password = request.form["password"]
-    if len(name) == 0 or len(account) == 0 or len(password) == 0:
+
+    if len(name) == 0 or len(account) == 0 or len(password) == 0 or name.isspace() or account.isspace() or password.isspace():
         return redirect("/error?message=姓名、帳號與密碼不可為空白，請再檢查一次&title=登入失敗&signout=重新登入")
-    else:   
+    else:    
         mycursor = mydb.cursor()
         sql = "SELECT * FROM member WHERE username = %s"
         params = (account,)
         mycursor.execute(sql, params)
         myresult = mycursor.fetchall()
-
+        
         if len(myresult) == 0:
             insert_sql = "INSERT INTO member(name, username, password, follower_count) VALUES(%s, %s, %s, %s)"
             insert_params = (name, account, password, 0)
             mycursor.execute(insert_sql, insert_params)
             mydb.commit()
-            max_sql = "SELECT MAX(id) FROM member"
-            mycursor.execute(max_sql)
-            maxresult = mycursor.fetchall()
-            session['member_id'] = maxresult[0][0]
+            #print(mycursor.lastrowid)
+            session['member_id'] = mycursor.lastrowid
             session["status"] = "sign in"
             session["name"] = name
             return redirect("/success?message=註冊成功&title=註冊成功&signin=進入會員頁")
@@ -54,8 +52,8 @@ def signin():
     account = request.form["account"]
     password = request.form["password"]
 
-    if len(account) == 0 or len(password) == 0:
-        return redirect("/error?message=請輸入帳號、密碼&status=成功&title=登入失敗&signout=重新登入") 
+    if len(account) == 0 or len(password) == 0 or account.isspace() or password.isspace():
+        return redirect("/error?message=請輸入帳號、密碼&status=成功&title=登入失敗&signout=重新登入")
     else:
         mycursor = mydb.cursor()
         sql = "SELECT * FROM member WHERE username = %s and password = %s"
@@ -63,10 +61,10 @@ def signin():
         mycursor.execute(sql, params)
         myresult = mycursor.fetchone()
 
-        if len(myresult) > 0:
+        if myresult:
             session["status"] = "sign in"
-            session['name'] = myresult[1]
-            session['member_id'] = myresult[0]
+            session["name"] = myresult[1]
+            session["member_id"] = myresult[0]
             return redirect("/member")
         else:
             return redirect("/error?message=帳號或密碼輸入錯誤&title=登入失敗&signout=重新登入")
@@ -74,21 +72,21 @@ def signin():
 @app.route("/member")
 def member(): 
     mycursor = mydb.cursor()
-    sql = "SELECT member.username, message.content FROM member INNER JOIN message ON member.id=message.member_id ORDER BY message.time ASC"
+    sql = "SELECT member.username, message.content FROM member INNER JOIN message ON member.id=message.member_id ORDER BY message.time"
     mycursor.execute(sql)
     myresult = mycursor.fetchall()
 
-    if "empty_sumit" in session:
+    if "empty_submit" in session:
         content = {
             "messages": myresult,
-            "name": session['name'],
-            "empty_sumit": session['empty_sumit']
-        }
+            "name": session["name"],
+            "empty_submit": session["empty_submit"]
+    }
     else:
         content = {
             "messages": myresult,
-            "name": session['name']
-        }
+            "name": session["name"]
+    }
     if "status" not in session or session["status"] == "sign out":
         return redirect("/")
     return render_template("member.html", data=content)
@@ -96,13 +94,12 @@ def member():
 @app.route("/message", methods=["POST"])
 def message():
     message = request.form["message"]
-    
     if len(message) == 0:
-        session["empty_sumit"] = "留言內容不可為空白，請重新輸入"
+        session["empty_submit"] = "留言內容不可為空白，請重新輸入"
         return redirect("/member")
     else:  
-        if "empty_sumit" in session:
-            session.pop("empty_sumit")  
+        if "empty_submit" in session:
+            session.pop("empty_submit")  
         mycursor = mydb.cursor()
         insert_sql = "INSERT INTO message(member_id, content) VALUES(%s, %s)"
         insert_params = ( session['member_id'],message)
@@ -110,11 +107,58 @@ def message():
         mydb.commit()
         return redirect("/member")
 
+@app.route("/api/member", methods=["GET", "PATCH"])
+def api_member(): 
+    if request.method == "PATCH":
+        request_params = request.get_json()
+
+        if "name" in request_params:
+            new_name = request_params["name"]
+            member_id = session["member_id"]
+
+            if not new_name.isspace() and len(new_name) > 0:
+                mycursor = mydb.cursor()
+                sql = "UPDATE member SET name = %s WHERE id = %s"
+                params = (new_name, member_id)
+                mycursor.execute(sql, params)
+                mydb.commit()
+                session["name"] = new_name
+                return {
+                    "ok":True
+                }
+            else:
+                return {
+                    "error":True
+                }
+        
+    else:
+        username=request.args.get("username")
+        data = None
+
+        if username:
+            mycursor = mydb.cursor(buffered=True)
+            sql = "SELECT * FROM member WHERE username = %s"
+            params = (username,)
+            mycursor.execute(sql, params)
+            myresult = mycursor.fetchone()
+
+            if myresult:
+                data = {
+                        "id":myresult[0],
+                        "name":myresult[1],
+                        "username":myresult[2]
+                }
+        result = {
+            "data":data
+        }
+        return result
+
 @app.route("/error")
 def error():
     message=request.args.get("message")
     title=request.args.get("title")
     signout=request.args.get("signout")
+
     tmp = {
         "message": message,
         "title": title,
@@ -124,9 +168,9 @@ def error():
 
 @app.route("/success")
 def success():
-    message=request.args.get("message")
-    title=request.args.get("title")
-    signin=request.args.get("signin")
+    message=request.args.get("message") 
+    title=request.args.get("title") 
+    signin=request.args.get("signin") 
   
     tmp = {
         "message": message,
@@ -138,6 +182,9 @@ def success():
 @app.route("/signout")
 def signout():
     session["status"] = "sign out"
+
+    if "empty_submit" in session:
+            session.pop("empty_submit")   
     return redirect("/")
 
 app.run(port=3000) 

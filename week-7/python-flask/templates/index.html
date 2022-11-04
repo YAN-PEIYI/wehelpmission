@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="static/styles.css" />
+    <title>會員登入系統</title>
+    <link rel="icon" type="image/x-icon" href="static/favicon.ico" />
+</head>
+
+<body>
+    <div class="system_name">
+        <h2>會員登入系統</h2>
+    </div>
+
+    <span id="signup">Signup</span>
+    <span id="login">Login</span>
+    <div id="tab">
+        <ul>
+            <li><a href="#signup">註冊</a></li>
+            <li><a href="#login">登入</a></li>
+        </ul>
+        <div class="tab-content-1">
+            <form action="/signup" method="post">
+                <input type="text" class="input-item" name="name" placeholder="姓名">
+                <input type="text" class="input-item" name="account" placeholder="帳號">
+                <input type="password" class="input-item" name="password" placeholder="密碼">
+                <input type="submit" value="註冊" class="submit">
+            </form>
+        </div>
+        <div class="tab-content-2">
+            <form action="/signin" method="post">
+                <input type="text" class="input-item" name="account" placeholder="帳號">
+                <input type="password" class="input-item" name="password" placeholder="密碼">
+                <input type="submit" value="登入" class="submit">
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static/styles.css" />
+    <title>會員登入成功</title>
+    <link rel="icon" type="image/x-icon" href="static/favicon.ico" />
+</head>
+
+<body>
+    <div class="system_name">
+        <h2 id="rename">Hi, {{ data["name"] }}, 歡迎回來！</h2>
+    </div>
+    <div class="container-member">
+        <h3>登入成功</h3>
+        <button class="btn" onclick="window.location.href='signout'">登出</button>
+        <form action="/message" method="post">
+            <input type="message" class="input-item" name="message" placeholder="寫下你現在的心情吧！">
+            <input type="submit" value="送出" class="btn">
+        </form>
+        <div class="warning">{{data["empty_submit"]}}</div>
+        <div class="message_box">
+            <ul>
+                {% for x in data["messages"] %}
+                <li><strong>{{x[0]}}: </strong> {{x[1]}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="input-group">
+            <input type="message" class="input-item" placeholder="輸入會員名" id="title">
+            <button class="btn" id="search">搜尋</button>
+        </div>
+        <div id="searchResult"></div>
+
+        <div class="input-group">
+            <input type="message" class="input-item" placeholder="輸入新的姓名" id="new_name">
+            <button class="btn" id="update">更新</button>
+        </div>
+        <div id="updateResult"></div>
+    </div>
+
+    <script>
+        const input_title = document.querySelector("input#title");
+        const btn_search = document.querySelector("button#search");
+        const searchResult = document.getElementById("searchResult");
+        btn_search.addEventListener("click", function (event) {
+
+            let title_value = input_title.value;
+            let str = "http://127.0.0.1:3000/api/member?username=" + title_value
+
+            fetch(str, {
+
+            }).then(function (response) {
+                return response.text();
+            }).then(function (json) {
+                const result = JSON.parse(json);
+
+                let searchResultStr = "";
+                if (result["data"]) {
+                    const name = result["data"]["name"];
+                    const username = result["data"]["username"];
+                    searchResultStr = name + "(" + username + ")";
+                    document.getElementById("searchResult").style.color = "black";
+                } else {
+                    searchResultStr = "查無此會員";
+                    document.getElementById("searchResult").style.color = "crimson";
+                }
+                document.getElementById("searchResult").style.fontSize = "16px";
+                document.getElementById("searchResult").style.fontWeight = "bold";
+                searchResult.innerText = searchResultStr;
+            });
+
+        });
+
+        const input_name = document.getElementById("new_name");
+        const btn_update = document.getElementById("update");
+        const updateResult = document.getElementById("updateResult");
+
+        btn_update.addEventListener("click", function (event) {
+
+            let name_value = input_name.value;
+            const url = "http://127.0.0.1:3000/api/member";
+
+            fetch(url, {
+                method: "PATCH",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ name: name_value })
+            }).then(function (response) {
+                console.log("response: ", response)
+                return response.text();
+            }).then(function (json) {
+                console.log("json: ", json);
+                const result = JSON.parse(json);
+                console.log("result: ", result)
+                if (result["ok"]) {
+                    updateResult.innerText = "更新成功";
+                    updateResult.style.color = "black";
+
+                    const rename = document.getElementById("rename");
+                    rename.innerText = "Hi, " + name_value + ", 歡迎回來！";
+                } else {
+                    updateResult.innerText = "更新失敗";
+                    updateResult.style.color = "crimson";
+                }
+                updateResult.style.fontSize = "16px";
+                updateResult.style.fontWeight = "bold";
+            });
+        });
+    </script>
+</body>
+
+</html>
